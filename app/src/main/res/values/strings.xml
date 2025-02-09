@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name" translatable="true">TAKVİM</string>
+
+    <string-array name="week_days">
+        <item >Pzt</item>
+        <item>Salı</item>
+        <item >Çrş</item>
+        <item >Prş</item>
+        <item >Cuma</item>
+        <item >Cts</item>
+        <item >Pzr</item>
+    </string-array>
+</resources>

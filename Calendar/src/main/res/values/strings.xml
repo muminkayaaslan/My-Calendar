@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="week_days">
+        <item >Pzt</item>
+        <item>Salı</item>
+        <item >Çrş</item>
+        <item >Prş</item>
+        <item >Cuma</item>
+        <item >Cts</item>
+        <item >Pzr</item>
+    </string-array>
+</resources>

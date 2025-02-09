@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="true">CALENDAR</string>
+    <string-array name="week_days">
+        <item >Mon</item>
+        <item>Tue</item>
+        <item >Wed</item>
+        <item >Thu</item>
+        <item >Fri</item>
+        <item >Sat</item>
+        <item >Sun</item>
+    </string-array>
+
+</resources>
