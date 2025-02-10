@@ -29,13 +29,26 @@ class MainActivity : ComponentActivity() {
         setContent {
             MyCalendarTheme {
                 Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
-                    CenterAlignedTopAppBar(title = { Text(stringResource(R.string.app_name  ), fontSize = 30.sp) },
+                    CenterAlignedTopAppBar(
+                        title = {
+                            Text(
+                                stringResource(R.string.app_name),
+                                fontSize = 30.sp,
+                                color = Color.White
+                            )
+                        },
                         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                             containerColor = Color.DarkGray
-                        ))
+                        )
+                    )
                 }) { innerPadding ->
-                    Column(modifier = Modifier.padding(innerPadding).fillMaxSize().background(color = if (isSystemInDarkTheme()) Color.Black else Color.White)) {
-                        Calendar()
+                    Column(
+                        modifier = Modifier
+                            .padding(innerPadding)
+                            .fillMaxSize()
+                            .background(color = if (isSystemInDarkTheme()) Color.Black else Color.White)
+                    ) {
+                        com.aslansoft.calendar.Calendar(Color.Blue)
                     }
                 }
             }

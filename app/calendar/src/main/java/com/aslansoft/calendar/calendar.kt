@@ -1,11 +1,11 @@
-package com.aslansoft.mycalendar
+package com.aslansoft.calendar
 
-import android.text.style.BackgroundColorSpan
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,7 +30,6 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Badge
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -60,7 +59,22 @@ import kotlin.math.sin
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Calendar(containerColor: Color = MaterialTheme.colorScheme.primary,contentColor: Color = MaterialTheme.colorScheme.secondary,backgroundColor: Color = MaterialTheme.colorScheme.background) {
+fun Calendar(
+    ContainerColor: Color = if (isSystemInDarkTheme()) Color(0xFF121212) else Color(0xFFF5F5F5),
+    HeaderColor: Color = if (isSystemInDarkTheme()) Color(0xFF1E1E1E) else Color(0xFFE0E0E0),
+    TitleColor: Color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+    WeekDaysColor: Color = if (isSystemInDarkTheme()) Color.LightGray else Color.DarkGray,
+    CurrentDaysBorderColor: Color = Color(0xFF00ACC1),
+    SelectedDayBorderColor: Color = if (isSystemInDarkTheme()) Color(0xFFFCB986) else Color(
+        0xFF6200EA
+    ),
+    TodayBorderColor: Color = if (isSystemInDarkTheme()) Color(0xFFDC64CC) else Color(0xFF0288D1),
+    CurrentDaysTextColor: Color = if (isSystemInDarkTheme()) Color(0xFFE0E0E0) else Color(0xFF424242),
+    SelectedDayTextColor: Color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+    TodayTextColor: Color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+    BadgeFirstColor: Color = Color(0xFFFBBC05),
+    BadgeTwoColor: Color = Color(0xFFEA4335)
+) {
 
 
     var selectedDay by remember { mutableStateOf<Pair<Int, Int>?>(null) }
@@ -124,7 +138,7 @@ fun Calendar(containerColor: Color = MaterialTheme.colorScheme.primary,contentCo
             Modifier
                 .height(50.dp)
                 .fillMaxWidth()
-                .background(color = backgroundColor),
+                .background(color = HeaderColor),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -138,12 +152,14 @@ fun Calendar(containerColor: Color = MaterialTheme.colorScheme.primary,contentCo
             }) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                    contentDescription = ""
+                    contentDescription = "",
+                    tint = TitleColor
                 )
             }
             Text(
                 monthName + " ${if (currentYear == year.intValue) "" else year.intValue}",
-                fontSize = 25.sp
+                fontSize = 25.sp,
+                color = TitleColor
             )
             IconButton(onClick = {
                 if (month.intValue < 11) {
@@ -155,14 +171,25 @@ fun Calendar(containerColor: Color = MaterialTheme.colorScheme.primary,contentCo
             }) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                    contentDescription = ""
+                    contentDescription = "",
+                    tint = TitleColor
                 )
             }
         }
         // Haftanın günleri başlık
-        Row(modifier = Modifier.fillMaxWidth().background(color = backgroundColor), horizontalArrangement = Arrangement.SpaceEvenly) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(color = HeaderColor),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
             weekDays.forEach { days ->
-                Text(text = days, modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
+                Text(
+                    text = days,
+                    modifier = Modifier.weight(1f),
+                    textAlign = TextAlign.Center,
+                    color = WeekDaysColor
+                )
             }
         }
         //takvim kısmı
@@ -172,7 +199,7 @@ fun Calendar(containerColor: Color = MaterialTheme.colorScheme.primary,contentCo
                 modifier = Modifier
                     .weight(1f)
                     .padding(top = 0.dp)
-                    .background(color = backgroundColor),
+                    .background(color = ContainerColor),
                 columns = GridCells.Fixed(weekDays.size),
                 state = lazyState
             ) {
@@ -194,10 +221,11 @@ fun Calendar(containerColor: Color = MaterialTheme.colorScheme.primary,contentCo
                                     modifier = Modifier
                                         .fillMaxSize()
                                         .background(
-                                            contentColor, shape = RoundedCornerShape(15.dp)
+                                            TodayBorderColor,
+                                            shape = RoundedCornerShape(15.dp)
                                         )
                                         .border(
-                                            1.dp, Color.White, shape = RoundedCornerShape(15.dp)
+                                            1.dp, TodayTextColor, shape = RoundedCornerShape(15.dp)
                                         ), contentAlignment = Alignment.Center
                                 ) {
                                     Column(
@@ -208,7 +236,7 @@ fun Calendar(containerColor: Color = MaterialTheme.colorScheme.primary,contentCo
                                         Text(
                                             day, fontWeight = FontWeight.Bold, color = Color.White
                                         )
-
+                                        HexagonBadge(BadgeFirstColor, BadgeTwoColor)
                                     }
 
                                 }
@@ -217,7 +245,9 @@ fun Calendar(containerColor: Color = MaterialTheme.colorScheme.primary,contentCo
                                     modifier = Modifier
                                         .fillMaxSize()
                                         .border(
-                                            1.dp, Color.White, shape = RoundedCornerShape(15.dp)
+                                            1.dp,
+                                            TodayBorderColor,
+                                            shape = RoundedCornerShape(15.dp)
                                         ), contentAlignment = Alignment.Center
                                 ) {
                                     Column(
@@ -226,7 +256,9 @@ fun Calendar(containerColor: Color = MaterialTheme.colorScheme.primary,contentCo
                                         horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
                                         Text(
-                                            day, fontWeight = FontWeight.Bold, color = Color.White
+                                            day,
+                                            fontWeight = FontWeight.Bold,
+                                            color = TodayTextColor
                                         )
                                     }
 
@@ -238,7 +270,9 @@ fun Calendar(containerColor: Color = MaterialTheme.colorScheme.primary,contentCo
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .border(
-                                        1.dp, contentColor, shape = RoundedCornerShape(15.dp)
+                                        1.dp,
+                                        SelectedDayBorderColor,
+                                        shape = RoundedCornerShape(15.dp)
                                     ), contentAlignment = Alignment.Center
                             ) {
                                 Column(
@@ -247,7 +281,9 @@ fun Calendar(containerColor: Color = MaterialTheme.colorScheme.primary,contentCo
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
                                     Text(
-                                        day, fontWeight = FontWeight.Bold, color = Color.White
+                                        day,
+                                        fontWeight = FontWeight.Bold,
+                                        color = SelectedDayTextColor
                                     )
 
                                 }
@@ -261,9 +297,9 @@ fun Calendar(containerColor: Color = MaterialTheme.colorScheme.primary,contentCo
                                         Color.Transparent, shape = RoundedCornerShape(15.dp)
                                     )
                                     .border(
-                                        0.3.dp, if (day.isNotEmpty()) Color(
-                                            102, 255, 255, 150
-                                        ) else Color.Transparent, RoundedCornerShape(15.dp)
+                                        0.3.dp,
+                                        if (day.isNotEmpty()) CurrentDaysBorderColor else Color.Transparent,
+                                        RoundedCornerShape(15.dp)
                                     ), contentAlignment = Alignment.Center
                             ) {
                                 Column(
@@ -274,7 +310,7 @@ fun Calendar(containerColor: Color = MaterialTheme.colorScheme.primary,contentCo
                                     Text(
                                         day,
                                         fontWeight = FontWeight.Bold,
-                                        color = Color(102, 255, 255, 200)
+                                        color = CurrentDaysTextColor
                                     )
 
                                 }
@@ -308,7 +344,7 @@ fun getMonthDays(year: Int, month: Int): List<String> {
 }
 
 @Composable
-fun HexagonBadge() {
+fun HexagonBadge(badgeColorOne: Color, badgeColorTwo: Color) {
     Badge(
         modifier = Modifier
             .size(7.5.dp)
@@ -326,7 +362,7 @@ fun HexagonBadge() {
                 }
                 val brush = Brush.linearGradient(
                     listOf(
-                        Color(255, 128, 0), Color(255, 255, 0)
+                        badgeColorOne, badgeColorTwo
                     )
                 )
                 path.close()

@@ -21,5 +21,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "My Calendar"
 include(":app")
-include(":Calendar")
-include(":app",":Calendar")
+include(":app")
+include(":app:calendar")
