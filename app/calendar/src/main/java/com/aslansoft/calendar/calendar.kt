@@ -54,7 +54,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 import java.text.DateFormatSymbols
+import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.Year
+import java.time.YearMonth
 import java.util.Calendar
 import java.util.Locale
 import kotlin.math.cos
@@ -84,16 +87,18 @@ fun Calendar(
 
     var selectedDay by remember { mutableStateOf<Pair<Int, Int>?>(null) }
     val context = LocalContext.current
-    val calendar = Calendar.getInstance()
-    val currentMonth = calendar.get(Calendar.MONTH)
-    val currentYear = calendar.get(Calendar.YEAR)
-    val today = calendar.get(Calendar.DAY_OF_MONTH)
+    val currentMonth = LocalDate.now().month.value
+    val currentYear = LocalDate.now().year
+    val today = LocalDate.now().dayOfMonth
     val weekDays = context.resources.getStringArray(R.array.week_days)
     val month = remember { mutableIntStateOf(currentMonth) }
     val year = remember { mutableIntStateOf(currentYear) }
     val days = getMonthDays(year.intValue, month.intValue)
-    val monthName = DateFormatSymbols(Locale.getDefault()).months[month.intValue]
+    val monthName = DateFormatSymbols(Locale.getDefault()).months[month.intValue - 1]
 
+    println("month value int:"+month.intValue)
+    println("year value int " +year.intValue)
+    println("today" + today)
     val lazyState = rememberLazyGridState(
         initialFirstVisibleItemIndex = month.intValue,
         initialFirstVisibleItemScrollOffset = month.intValue
@@ -117,10 +122,10 @@ fun Calendar(
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(onClick = {
-                if (month.intValue > 0) {
+                if (month.intValue > 1) {
                     month.value -= 1
                 } else {
-                    month.intValue = 11
+                    month.intValue = 12
                     year.value -= 1 // Yılı düşür
                 }
             }) {
@@ -136,10 +141,10 @@ fun Calendar(
                 color = TitleColor
             )
             IconButton(onClick = {
-                if (month.intValue < 11) {
+                if (month.intValue < 12) {
                     month.value += 1
                 } else {
-                    month.intValue = 0
+                    month.intValue = 1
                     year.value += 1 // Yılı artır
                 }
             }) {
@@ -177,7 +182,7 @@ fun Calendar(
 
                 items(days) { day ->
                     val parsedDay = day.toIntOrNull()
-                    val markeDatesFormated = MarkedDays.groupBy { Pair(it.year,it.monthValue-1) }
+                    val markeDatesFormated = MarkedDays.groupBy { Pair(it.year,it.monthValue) }
                         .mapValues { entry -> entry.value.map{
                             it.dayOfMonth
                         }  }
@@ -315,20 +320,33 @@ fun Calendar(
 }
 
 fun getMonthDays(year: Int, month: Int): List<String> {
-    val calendar = Calendar.getInstance()
-    calendar.set(Calendar.YEAR, year)
-    calendar.set(Calendar.MONTH, month)
-    calendar.set(Calendar.DAY_OF_MONTH, 1)
-    val daysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
-    val startDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1
+    // Belirtilen yıl ve ay için YearMonth nesnesi oluştur
+    val yearMonth = YearMonth.of(year, month)
+
+    // Ayın ilk gününü al
+    val firstDayOfMonth = yearMonth.atDay(1)
+
+    // İlk günün haftanın hangi günü olduğunu bul (Pazartesi=1, Pazar=7)
+    val firstDayOfWeek = firstDayOfMonth.dayOfWeek.value
+
+    // Haftanın başlangıç gününü Pazartesi olarak ayarla
+    val startDayOffset = (firstDayOfWeek - DayOfWeek.MONDAY.value + 7) % 7
+
+    // Ayın toplam gün sayısını bul
+    val daysInMonth = yearMonth.lengthOfMonth()
+
     val daysList = mutableListOf<String>()
-    for (i in 1 until startDayOfWeek) {
+
+    // İlk gün Pazartesi olacak şekilde boşlukları ekle
+    for (i in 0 until startDayOffset) {
         daysList.add("")
     }
 
+    // Ayın günlerini listeye ekle
     for (day in 1..daysInMonth) {
         daysList.add(day.toString())
     }
+
     return daysList
 }
 
