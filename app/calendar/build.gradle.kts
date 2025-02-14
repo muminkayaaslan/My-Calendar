@@ -6,6 +6,7 @@ plugins {
 
 android {
     namespace = "com.aslansoft.calendar"
+    version = "0.0.1-beta01"
     compileSdk = 35
 
     defaultConfig {

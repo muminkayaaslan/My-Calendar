@@ -9,6 +9,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -40,6 +41,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -52,6 +54,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 import java.text.DateFormatSymbols
+import java.time.LocalDate
 import java.util.Calendar
 import java.util.Locale
 import kotlin.math.cos
@@ -60,6 +63,7 @@ import kotlin.math.sin
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Calendar(
+    MarkedDays: List<LocalDate>,
     ContainerColor: Color = if (isSystemInDarkTheme()) Color(0xFF121212) else Color(0xFFF5F5F5),
     HeaderColor: Color = if (isSystemInDarkTheme()) Color(0xFF1E1E1E) else Color(0xFFE0E0E0),
     TitleColor: Color = if (isSystemInDarkTheme()) Color.White else Color.Black,
@@ -73,7 +77,8 @@ fun Calendar(
     SelectedDayTextColor: Color = if (isSystemInDarkTheme()) Color.White else Color.Black,
     TodayTextColor: Color = if (isSystemInDarkTheme()) Color.White else Color.Black,
     BadgeFirstColor: Color = Color(0xFFFBBC05),
-    BadgeTwoColor: Color = Color(0xFFEA4335)
+    BadgeTwoColor: Color = Color(0xFFEA4335),
+    dayOnclick: () -> Unit = {}
 ) {
 
 
@@ -94,37 +99,6 @@ fun Calendar(
         initialFirstVisibleItemScrollOffset = month.intValue
     )
 
-    val pagerState = rememberPagerState(initialPage = month.intValue) { 12 }
-
-    LaunchedEffect(pagerState.currentPage) {
-        val currentPage = pagerState.currentPage
-
-        // Önce geçerli ayı güncelle
-        month.intValue = currentPage
-
-        when (currentPage) {
-            0 -> { // Ocak'tan geriye kaydırılırsa
-                if (month.intValue == 0) {
-                    year.intValue -= 1 // Önce yılı azalt
-                    delay(300) // Çakışmayı önlemek için gecikme
-                    if (pagerState.currentPage == 0) { // Eğer gerçekten Ocak'taysa
-                        pagerState.scrollToPage(11) // Aralık ayına kaydır
-                    }
-                }
-            }
-
-            11 -> { // Aralık'tan ileri kaydırılırsa
-                if (month.intValue == 11) {
-                    year.intValue += 1 // Önce yılı artır
-                    delay(300)
-                    if (pagerState.currentPage == 11) { // Eğer gerçekten Aralık'taysa
-                        pagerState.scrollToPage(0) // Ocak ayına kaydır
-                    }
-                }
-            }
-        }
-    }
-
 
     val selectedDayState = remember { mutableStateOf(selectedDay) }
 
@@ -132,7 +106,7 @@ fun Calendar(
         selectedDayState.value = selectedDay
     }
     Spacer(Modifier.padding(vertical = 10.dp))
-    Column {
+    Column(modifier = Modifier.clip((RoundedCornerShape(15.dp)))){
         //ay yıl başlık
         Row(
             Modifier
@@ -193,19 +167,22 @@ fun Calendar(
             }
         }
         //takvim kısmı
-        HorizontalPager(pagerState, beyondBoundsPageCount = 1) {
-            Spacer(Modifier.padding(vertical = 8.dp))
             LazyVerticalGrid(
                 modifier = Modifier
-                    .weight(1f)
-                    .padding(top = 0.dp)
                     .background(color = ContainerColor),
                 columns = GridCells.Fixed(weekDays.size),
-                state = lazyState
+                state = lazyState,
+                contentPadding = PaddingValues(top = 8.dp)
             ) {
 
                 items(days) { day ->
                     val parsedDay = day.toIntOrNull()
+                    val markeDatesFormated = MarkedDays.groupBy { Pair(it.year,it.monthValue-1) }
+                        .mapValues { entry -> entry.value.map{
+                            it.dayOfMonth
+                        }  }
+                    val isMarked = markeDatesFormated[Pair(year.intValue,month.intValue)]?.contains(parsedDay) == true
+                    //badge çağırılacak
                     Box(
                         Modifier
                             .padding(4.dp)
@@ -213,6 +190,7 @@ fun Calendar(
                             .clickable(enabled = day.isNotEmpty(), role = Role.RadioButton) {
                                 selectedDay = Pair(day.trim().toIntOrNull() ?: 1, month.intValue)
                                 Log.d("Calendar", day)
+                                dayOnclick()
                             }, contentAlignment = Alignment.Center
                     ) {
                         if (day == today.toString() && month.intValue == currentMonth && year.intValue == currentYear) {
@@ -236,7 +214,9 @@ fun Calendar(
                                         Text(
                                             day, fontWeight = FontWeight.Bold, color = Color.White
                                         )
-                                        HexagonBadge(BadgeFirstColor, BadgeTwoColor)
+                                        if (isMarked){
+                                            HexagonBadge(BadgeFirstColor,BadgeTwoColor)
+                                        }
                                     }
 
                                 }
@@ -260,7 +240,12 @@ fun Calendar(
                                             fontWeight = FontWeight.Bold,
                                             color = TodayTextColor
                                         )
+                                        if (isMarked){
+                                        HexagonBadge(BadgeFirstColor,BadgeTwoColor)
                                     }
+
+                                    }
+
 
                                 }
                             }
@@ -285,7 +270,9 @@ fun Calendar(
                                         fontWeight = FontWeight.Bold,
                                         color = SelectedDayTextColor
                                     )
-
+                                    if (isMarked){
+                                        HexagonBadge(BadgeFirstColor,BadgeTwoColor)
+                                    }
                                 }
 
                             }
@@ -312,7 +299,9 @@ fun Calendar(
                                         fontWeight = FontWeight.Bold,
                                         color = CurrentDaysTextColor
                                     )
-
+                                    if (isMarked){
+                                        HexagonBadge(BadgeFirstColor,BadgeTwoColor)
+                                    }
                                 }
                             }
                         }
@@ -320,7 +309,7 @@ fun Calendar(
                 }
 
             }
-        }
+
 
     }
 }
