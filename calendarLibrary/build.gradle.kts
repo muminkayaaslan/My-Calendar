@@ -1,11 +1,12 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.compose.compiler)
+    id("maven-publish")
 }
 
 android {
-    namespace = "com.aslansoft.calendar"
+    namespace = "com.aslansoft.calendarLibrary"
     version = "0.0.1-beta01"
     compileSdk = 35
 

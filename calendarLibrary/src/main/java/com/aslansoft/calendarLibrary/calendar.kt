@@ -1,4 +1,4 @@
-package com.aslansoft.calendar
+package com.aslansoft.calendarLibrary
 
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -22,8 +22,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
@@ -52,13 +50,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.delay
 import java.text.DateFormatSymbols
 import java.time.DayOfWeek
 import java.time.LocalDate
-import java.time.Year
 import java.time.YearMonth
-import java.util.Calendar
 import java.util.Locale
 import kotlin.math.cos
 import kotlin.math.sin
@@ -111,7 +106,7 @@ fun Calendar(
         selectedDayState.value = selectedDay
     }
     Spacer(Modifier.padding(vertical = 10.dp))
-    Column(modifier = Modifier.clip((RoundedCornerShape(15.dp)))){
+    Column(modifier = Modifier.clip((RoundedCornerShape(15.dp))), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally){
         //ay yıl başlık
         Row(
             Modifier

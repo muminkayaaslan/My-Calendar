@@ -9,10 +9,8 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -26,9 +24,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
+import com.aslansoft.calendarLibrary.Calendar
 import com.aslansoft.mycalendar.ui.theme.MyCalendarTheme
 import java.time.LocalDate
 import java.time.Month
+
 
 class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -55,9 +55,7 @@ class MainActivity : ComponentActivity() {
                     var alertDialogState by remember { mutableStateOf(false) }
                     if(alertDialogState){
                         BasicAlertDialog(onDismissRequest = { alertDialogState = false }) {
-                                Card (colors = CardDefaults.cardColors(
-
-                                )){
+                                Card{
                                     Text("Hello World")
                                 }
                         }
@@ -74,10 +72,11 @@ class MainActivity : ComponentActivity() {
                             LocalDate.of(2025,Month.MARCH,3),
                             LocalDate.now(),
                             LocalDate.of(2025,2,16),
+                            LocalDate.of(2025,Month.MARCH,23)
                         )
-                        com.aslansoft.calendar.Calendar(dateList, dayOnclick = {
-                            alertDialogState = true
-                        })
+                        Calendar(
+                            dateList,
+                            dayOnclick = { alertDialogState = true })
                     }
                 }
             }

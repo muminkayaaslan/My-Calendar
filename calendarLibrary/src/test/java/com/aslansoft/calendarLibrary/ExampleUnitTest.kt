@@ -1,4 +1,4 @@
-package com.aslansoft.calendar
+package com.aslansoft.calendarLibrary
 
 import org.junit.Test
 
