@@ -2,7 +2,11 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
+    `maven-publish`
+
 }
+group = "com.github.muminkayaaslan" // GitHub kullanıcı adını yaz
+version = "1.0.0"
 
 android {
     namespace = "com.aslansoft.calendarLibrary"
@@ -36,6 +40,7 @@ android {
     buildFeatures {
         compose = true
     }
+
 }
 
 dependencies {
@@ -45,7 +50,20 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation("com.github.muminkayaaslan:My-Calendar:main-SNAPSHOT")
-
 }
 
+publishing {
+    publications {
+        create<MavenPublication>("release") {
+            // Yayınlanacak bileşeni belirtin (release veya debug)
+            afterEvaluate {
+                from(components["release"])
+            }
+
+            // Grup ID, Artifact ID ve versiyon bilgileri
+            groupId = "com.github.muminkayaaslan" // GitHub kullanıcı adınız
+            artifactId = "My-Calendar" // Repository adınız
+            version = "1.0.0" // Kütüphanenizin versiyonu
+        }
+    }
+}
