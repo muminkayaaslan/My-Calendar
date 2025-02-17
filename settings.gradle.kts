@@ -16,6 +16,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url = uri("https://jitpack.io") }
     }
 }
 
@@ -24,3 +25,5 @@ include(":app")
 include(":app")
 include(":calendarLibrary")
 project(":calendarLibrary").name = "calendar-library"
+
+
