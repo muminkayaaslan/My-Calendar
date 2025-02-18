@@ -25,4 +25,4 @@ Then go to “build.gradle.kts(Module :app)” and add this line:
     implementation("com.github.muminkayaaslan:My-Calendar:<version>")
 ````
 ---
-# In case of a problem [jitpack.io](https://jitpack.io/) you can look here
+# In case of a problem [https://jitpack.io/](https://jitpack.io/) you can look here
