@@ -27,6 +27,7 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Badge
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -73,6 +74,7 @@ fun Calendar(
     todayTextColor: Color = if (isSystemInDarkTheme()) Color.White else Color.Black,
     badgeFirstColor: Color = Color(0xFFFBBC05),
     badgeTwoColor: Color = Color(0xFFEA4335),
+    todaySelectedContainerColor: Color = MaterialTheme.colorScheme.secondary,
     dayOnclick: () -> Unit = {}
 ) {
 
@@ -194,7 +196,7 @@ fun Calendar(
                                     modifier = Modifier
                                         .fillMaxSize()
                                         .background(
-                                            todayBorderColor,
+                                            todaySelectedContainerColor,
                                             shape = RoundedCornerShape(15.dp)
                                         )
                                         .border(
