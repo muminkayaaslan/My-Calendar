@@ -5,7 +5,7 @@ plugins {
     `maven-publish`
 
 }
-group = "com.github.muminkayaaslan" // GitHub kullanıcı adını yaz
+group = "com.github.muminkayaaslan"
 version = "1.0.0"
 
 android {
@@ -14,7 +14,7 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        minSdk = 30
+        minSdk = 26
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -55,15 +55,14 @@ dependencies {
 publishing {
     publications {
         create<MavenPublication>("release") {
-            // Yayınlanacak bileşeni belirtin (release veya debug)
             afterEvaluate {
                 from(components["release"])
             }
 
-            // Grup ID, Artifact ID ve versiyon bilgileri
-            groupId = "com.github.muminkayaaslan" // GitHub kullanıcı adınız
-            artifactId = "My-Calendar" // Repository adınız
-            version = "1.0.0" // Kütüphanenizin versiyonu
+
+            groupId = "com.github.muminkayaaslan"
+            artifactId = "My-Calendar"
+            version = "1.0.0"
         }
     }
 }

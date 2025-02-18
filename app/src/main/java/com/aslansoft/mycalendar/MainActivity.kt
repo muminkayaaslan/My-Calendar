@@ -3,12 +3,17 @@ package com.aslansoft.mycalendar
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -21,8 +26,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aslansoft.calendarLibrary.Calendar
 import com.aslansoft.mycalendar.ui.theme.MyCalendarTheme
@@ -35,7 +42,9 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        enableEdgeToEdge(statusBarStyle = SystemBarStyle.dark(
+            scrim = 1
+        ), navigationBarStyle = SystemBarStyle.dark(1))
         setContent {
             MyCalendarTheme {
                 Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
@@ -75,7 +84,8 @@ class MainActivity : ComponentActivity() {
                             LocalDate.of(2025,Month.MARCH,23)
                         )
                         Calendar(
-                            dateList,
+                            modifier = Modifier.clip(RoundedCornerShape(15.dp)).fillMaxSize(),
+                            markedDays = dateList,
                             dayOnclick = { alertDialogState = true })
                     }
                 }
