@@ -1,7 +1,8 @@
 # My-Calendar
 ## This project is my first library project
 ---
-### Version: [![](https://jitpack.io/v/muminkayaaslan/My-Calendar.svg)](https://jitpack.io/#muminkayaaslan/My-Calendar) 
+### Version: [![](https://jitpack.io/v/muminkayaaslan/My-Calendar.svg)](https://jitpack.io/#muminkayaaslan/My-Calendar)
+
 ---
 # How to install?
 ## To download this library:
